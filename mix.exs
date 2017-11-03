@@ -4,10 +4,25 @@ defmodule PleaseStop.Mixfile do
   def project do
     [
       app: :please_stop,
-      version: "0.1.0",
+      name: "PleaseStop",
+      version: "1.0.0",
       elixir: "~> 1.5",
+      description: "Rate limiting plug for Cowboy / Phoenix",
+      package: %{
+        maintainers: ["Adam Beck"],
+        licenses: ["MIT"],
+        links: %{
+          "Github": "https://github.com/Gwash3189/please_stop"
+        },
+      },
+      source_url: "https://github.com/Gwash3189/please_stop",
+      homepage_url: "https://github.com/Gwash3189/please_stop",
       start_permanent: Mix.env == :prod,
-      deps: deps()
+      deps: deps(),
+      docs: [
+        main: "PleaseStop",
+        extras: ["README.md"]
+      ]
     ]
   end
 
@@ -22,8 +37,9 @@ defmodule PleaseStop.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+      {:plug, "~> 1.4"},
+      {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
+      {:ex_doc, "~> 0.14", only: :dev}
     ]
   end
 end
