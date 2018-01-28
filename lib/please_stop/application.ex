@@ -9,12 +9,22 @@ defmodule PleaseStop.Application do
     children = [
       # Starts a worker by calling: PleaseStop.Worker.start_link(arg)
       # {PleaseStop.Worker, arg},
-      worker(PleaseStop.Store, [])
+      supervisor(ConCache, [[], [name: :please_stop_cache]]),
+      :poolboy.child_spec(PleaseStop.Store.pool_name(), poolboy_config())
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: PleaseStop.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  defp poolboy_config() do
+    [
+      {:name, {:local, PleaseStop.Store.pool_name()}},
+      {:worker_module, PleaseStop.Store},
+      {:size, 10},
+      {:max_overflow, 10}
+    ]
   end
 end

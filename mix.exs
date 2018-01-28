@@ -39,6 +39,8 @@ defmodule PleaseStop.Mixfile do
     [
       {:plug, "~> 1.4"},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
+      {:con_cache, "~> 0.12.1"},
+      {:poolboy, "~> 1.5"},
       {:ex_doc, "~> 0.14", only: :dev}
     ]
   end

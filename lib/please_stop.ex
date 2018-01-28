@@ -28,15 +28,14 @@ defmodule PleaseStop do
   """
 
   def init(options) do
-    Store.initialise(options)
+    options
   end
 
-  def call(conn, %PleaseStop.Store{namespace: namespace}) do
-    case Store.over_limit?(namespace) do
+  def call(conn, options) do
+    case Store.over_limit?(conn, options) do
        false ->
-        Store.increment(namespace) # increment number for that namespace
+        Store.increment(conn, options) # increment number for that namespace
        true ->
-        Logger.warn "#{namespace} has exceeded their limit"
         conn
         |> send_resp(429, "")
         |> halt
