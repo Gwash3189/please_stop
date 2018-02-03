@@ -1,12 +1,10 @@
 defmodule PleaseStop.Store do
   use GenServer
 
-  defstruct [
-    limit: 0,
-    ttl: :timer.minutes(1),
-    namespace: nil,
-    count: 0
-  ]
+  defstruct limit: 0,
+            ttl: :timer.minutes(1),
+            namespace: nil,
+            count: 0
 
   @doc """
   Creates a `PleaseStop.Store` struct from a keyword list of `limit`, `ttl`, and `namespace`
@@ -25,12 +23,12 @@ defmodule PleaseStop.Store do
     namespace = Keyword.get(list, :namespace)
 
     Map.merge(struct, %{
-      limit: limit, 
-      ttl: ttl, 
+      limit: limit,
+      ttl: ttl,
       namespace: namespace
     })
   end
-  
+
   @doc "the pool name used in poolboy"
   def pool_name, do: :store_worker
 
@@ -67,10 +65,7 @@ defmodule PleaseStop.Store do
   end
 
   defp transaction(kind, term) do
-    :poolboy.transaction(
-      pool_name(),
-      fn pid -> apply(GenServer, kind, [pid, term]) end
-    )
+    :poolboy.transaction(pool_name(), fn pid -> apply(GenServer, kind, [pid, term]) end)
   end
 
   defp get(conn, options) do

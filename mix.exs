@@ -12,12 +12,12 @@ defmodule PleaseStop.Mixfile do
         maintainers: ["Adam Beck"],
         licenses: ["MIT"],
         links: %{
-          "Github": "https://github.com/Gwash3189/please_stop"
-        },
+          Github: "https://github.com/Gwash3189/please_stop"
+        }
       },
       source_url: "https://github.com/Gwash3189/please_stop",
       homepage_url: "https://github.com/Gwash3189/please_stop",
-      start_permanent: Mix.env == :prod,
+      start_permanent: Mix.env() == :prod,
       deps: deps(),
       docs: [
         main: "PleaseStop",

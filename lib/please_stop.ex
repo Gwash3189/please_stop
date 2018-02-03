@@ -33,9 +33,11 @@ defmodule PleaseStop do
 
   def call(conn, options) do
     case Store.over_limit?(conn, options) do
-       false ->
-        Store.increment(conn, options) # increment number for that namespace
-       true ->
+      false ->
+        # increment number for that namespace
+        Store.increment(conn, options)
+
+      true ->
         conn
         |> send_resp(429, "")
         |> halt
