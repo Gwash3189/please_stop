@@ -6,7 +6,7 @@ defmodule PleaseStop.Mixfile do
       app: :please_stop,
       name: "PleaseStop",
       version: "1.0.0",
-      elixir: "~> 1.5",
+      elixir: "~> 1.6",
       description: "Rate limiting plug for Cowboy / Phoenix",
       package: %{
         maintainers: ["Adam Beck"],
