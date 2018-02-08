@@ -13,7 +13,7 @@ defmodule PleaseStop do
     plug PleaseStop, limit: 5000, ttl: :timer.minutes(1), namespace: :avatars
 
     scope "/something" do
-      plug PleaseStop, limit: 5, ttl: :timer.minutes(10), namespace: :something
+      plug PleaseStop, limit: 5, ttl: :timer.minutes(10), namespace: fn (conn) -> conn.assigns.something end
     end
   end
   ```
@@ -25,6 +25,7 @@ defmodule PleaseStop do
   * `limit`: The maximum number of requests you'll accept within the provided `ttl`.
   * `ttl`: The amount of time before the request count is set back to `0`. If the `limit` is reached within this `ttl`, a `429` will be returned and the `conn` will be halted.
   * `namespace`: The namespace where your rate limiting information is kept.
+                 This namespace can be a static value or a function that receives the current connection
   """
 
   def init(options) do

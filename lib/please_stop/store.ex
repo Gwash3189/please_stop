@@ -9,11 +9,6 @@ defmodule PleaseStop.Store do
   @doc """
   Creates a `PleaseStop.Store` struct from a keyword list of `limit`, `ttl`, and `namespace`
 
-  ## Examples
-
-  iex> func = fn conn -> conn.assigns.id end
-  iex> PleaseStop.Store.new([limit: 5, ttl: :timer.minutes(1), namespace: func])
-  %PleaseStop.Store{limit: 5, ttl: :timer.minutes(1), namespace: func}
   """
   def new(list) do
     struct = %PleaseStop.Store{}
@@ -21,6 +16,12 @@ defmodule PleaseStop.Store do
     limit = Keyword.get(list, :limit)
     ttl = Keyword.get(list, :ttl)
     namespace = Keyword.get(list, :namespace)
+
+    namespace =
+      case is_function(namespace) do
+        true -> namespace
+        false -> fn _ -> namespace end
+      end
 
     Map.merge(struct, %{
       limit: limit,
@@ -46,7 +47,7 @@ defmodule PleaseStop.Store do
   end
 
   @doc """
-  returns a boolean indicating wether the `namespace` 
+  returns a boolean indicating wether the `namespace`
   is over their specified `limit` or not"
   """
   def over_limit?(conn, options) do
