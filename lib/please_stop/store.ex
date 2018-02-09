@@ -60,7 +60,7 @@ defmodule PleaseStop.Store do
     {:noreply, state}
   end
 
-  def handle_call({:over_limit, conn, options}, state) do
+  def handle_call({:over_limit, conn, options}, _from, state) do
     %{count: count, limit: limit} = get(conn, options)
     {:reply, count >= limit, state}
   end
