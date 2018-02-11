@@ -9,7 +9,7 @@ defmodule PleaseStop.Application do
     children = [
       # Starts a worker by calling: PleaseStop.Worker.start_link(arg)
       # {PleaseStop.Worker, arg},
-      supervisor(ConCache, [[], [name: :please_stop_cache]]),
+      supervisor(ConCache, [[ttl_check_interval: :timer.seconds(1)], [name: :please_stop_cache]]),
       :poolboy.child_spec(PleaseStop.Store.pool_name(), poolboy_config())
     ]
 
