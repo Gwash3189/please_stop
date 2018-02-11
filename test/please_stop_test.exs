@@ -1,4 +1,5 @@
 defmodule PleaseStopTest do
+  use Spyanator.Assertions
   use ExUnit.Case, async: false
   use Plug.Test
 
@@ -6,7 +7,8 @@ defmodule PleaseStopTest do
   def options, do: PleaseStop.Store.new(
     limit: 1,
     ttl: :timer.seconds(1),
-    namespace: :name
+    namespace: :name,
+    on_overage: &PleaseStopTest.OverageSpy.on_overage(&1)
   )
   def wait, do: :timer.sleep(250)
   def response(conn) do
@@ -17,9 +19,21 @@ defmodule PleaseStopTest do
     conn
   end
 
+  defmodule OverageSpy do
+    use Spyanator
+
+    def on_overage(_), do: true
+  end
+
   setup do
-    result = [connection: call(conn(), options())]
+    opts = options()
+
+    Spyanator.start_link
+    Spyanator.start_spy(OverageSpy)
+
+    result = [connection: call(conn(), opts), options: opts]
     wait()
+
     result
   end
 
@@ -40,10 +54,22 @@ defmodule PleaseStopTest do
   end
 
   describe "when a namespace is over it's limit" do
+    setup do
+      opts = options()
+      result = [connection: call(conn(), opts), options: opts]
+      wait()
+
+      result
+    end
+
     test "a 429 is sent", context do
       {status, _, _} = response(context[:connection])
 
       assert status == 429
+    end
+
+    test "it calls the provided on_overage function", context do
+      assert OverageSpy |> received(:on_overage) |> at_least(1) |> time
     end
   end
 end

@@ -39,6 +39,8 @@ defmodule PleaseStop do
         Store.increment(conn, options)
 
       true ->
+        options.on_overage && options.on_overage.(conn)
+
         conn
         |> send_resp(429, "")
         |> halt

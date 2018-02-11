@@ -4,7 +4,8 @@ defmodule PleaseStop.Store do
   defstruct limit: 0,
             ttl: :timer.minutes(1),
             namespace: nil,
-            count: 0
+            count: 0,
+            on_overage: nil
 
   @doc """
   Creates a `PleaseStop.Store` struct from a keyword list of `limit`, `ttl`, and `namespace`
@@ -16,6 +17,7 @@ defmodule PleaseStop.Store do
     limit = Keyword.get(list, :limit)
     ttl = Keyword.get(list, :ttl)
     namespace = Keyword.get(list, :namespace)
+    on_overage = Keyword.get(list, :on_overage)
 
     namespace =
       case is_function(namespace) do
@@ -26,7 +28,8 @@ defmodule PleaseStop.Store do
     Map.merge(struct, %{
       limit: limit,
       ttl: ttl,
-      namespace: namespace
+      namespace: namespace,
+      on_overage: on_overage
     })
   end
 
