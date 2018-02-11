@@ -4,16 +4,22 @@ defmodule PleaseStopTest do
   use Plug.Test
 
   def conn, do: Plug.Test.conn(:get, "/foo")
-  def options, do: PleaseStop.Store.new(
-    limit: 1,
-    ttl: :timer.seconds(1),
-    namespace: :name,
-    on_overage: &PleaseStopTest.OverageSpy.on_overage(&1)
-  )
+
+  def options,
+    do:
+      PleaseStop.Store.new(
+        limit: 1,
+        ttl: :timer.seconds(1),
+        namespace: :name,
+        on_overage: &PleaseStopTest.OverageSpy.on_overage(&1)
+      )
+
   def wait, do: :timer.sleep(250)
+
   def response(conn) do
     sent_resp(conn)
   end
+
   def call(conn, options) do
     PleaseStop.call(conn, options)
     conn
@@ -28,7 +34,7 @@ defmodule PleaseStopTest do
   setup do
     opts = options()
 
-    Spyanator.start_link
+    Spyanator.start_link()
     Spyanator.start_spy(OverageSpy)
 
     result = [connection: call(conn(), opts), options: opts]
