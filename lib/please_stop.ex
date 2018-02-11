@@ -13,7 +13,7 @@ defmodule PleaseStop do
     plug PleaseStop, limit: 5000, ttl: :timer.minutes(1), namespace: :avatars
 
     scope "/something" do
-      plug PleaseStop, limit: 5, ttl: :timer.minutes(10), namespace: :something
+      plug PleaseStop, limit: 5, ttl: :timer.minutes(10), namespace: fn (conn) -> conn.assigns.something end
     end
   end
   ```
@@ -25,18 +25,33 @@ defmodule PleaseStop do
   * `limit`: The maximum number of requests you'll accept within the provided `ttl`.
   * `ttl`: The amount of time before the request count is set back to `0`. If the `limit` is reached within this `ttl`, a `429` will be returned and the `conn` will be halted.
   * `namespace`: The namespace where your rate limiting information is kept.
+                 This namespace can be a static value or a function that receives the current connection
+
+  #### Configuration Options
+
+  By default PleaseStop uses a poolboy size of 10 with a overflow size of 10.
+  These values can be configured by changing the following config options
+
+  ```
+    config :please_stop,
+      pool_size: 50,
+      pool_overflow_size: 100
+  ```
   """
 
   def init(options) do
-    Store.initialise(options)
+    options
   end
 
-  def call(conn, %PleaseStop.Store{namespace: namespace}) do
-    case Store.over_limit?(namespace) do
-       false ->
-        Store.increment(namespace) # increment number for that namespace
-       true ->
-        Logger.warn "#{namespace} has exceeded their limit"
+  def call(conn, options) do
+    case Store.over_limit?(conn, options) do
+      false ->
+        # increment number for that namespace
+        Store.increment(conn, options)
+
+      true ->
+        options.on_overage && options.on_overage.(conn)
+
         conn
         |> send_resp(429, "")
         |> halt

@@ -6,18 +6,18 @@ defmodule PleaseStop.Mixfile do
       app: :please_stop,
       name: "PleaseStop",
       version: "1.0.0",
-      elixir: "~> 1.5",
+      elixir: "~> 1.6",
       description: "Rate limiting plug for Cowboy / Phoenix",
       package: %{
         maintainers: ["Adam Beck"],
         licenses: ["MIT"],
         links: %{
-          "Github": "https://github.com/Gwash3189/please_stop"
-        },
+          Github: "https://github.com/Gwash3189/please_stop"
+        }
       },
       source_url: "https://github.com/Gwash3189/please_stop",
       homepage_url: "https://github.com/Gwash3189/please_stop",
-      start_permanent: Mix.env == :prod,
+      start_permanent: Mix.env() == :prod,
       deps: deps(),
       docs: [
         main: "PleaseStop",
@@ -39,7 +39,10 @@ defmodule PleaseStop.Mixfile do
     [
       {:plug, "~> 1.4"},
       {:credo, "~> 0.8", only: [:dev, :test], runtime: false},
-      {:ex_doc, "~> 0.14", only: :dev}
+      {:con_cache, "~> 0.12.1"},
+      {:poolboy, "~> 1.5"},
+      {:ex_doc, "~> 0.14", only: :dev},
+      {:spyanator, "~> 0.0.4", only: :test}
     ]
   end
 end
