@@ -23,8 +23,22 @@ defmodule PleaseStop.Application do
     [
       {:name, {:local, PleaseStop.Store.pool_name()}},
       {:worker_module, PleaseStop.Store},
-      {:size, 10},
-      {:max_overflow, 10}
+      {:size, pool_size()},
+      {:max_overflow, overflow_size()}
     ]
+  end
+
+  defp pool_size do
+    case Application.fetch_env(:please_stop, :pool_size) do
+      :error -> 10
+      value -> value
+    end
+  end
+
+  defp overflow_size do
+    case Application.fetch_env(:please_stop, :pool_overflow_size) do
+      :error -> 10
+      value -> value
+    end
   end
 end

@@ -74,7 +74,7 @@ defmodule PleaseStopTest do
       assert status == 429
     end
 
-    test "it calls the provided on_overage function", context do
+    test "it calls the provided on_overage function" do
       assert OverageSpy |> received(:on_overage) |> at_least(1) |> time
     end
   end

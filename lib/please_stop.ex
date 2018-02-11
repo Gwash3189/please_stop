@@ -26,6 +26,17 @@ defmodule PleaseStop do
   * `ttl`: The amount of time before the request count is set back to `0`. If the `limit` is reached within this `ttl`, a `429` will be returned and the `conn` will be halted.
   * `namespace`: The namespace where your rate limiting information is kept.
                  This namespace can be a static value or a function that receives the current connection
+
+  #### Configuration Options
+
+  By default PleaseStop uses a poolboy size of 10 with a overflow size of 10.
+  These values can be configured by changing the following config options
+
+  ```
+    config :please_stop,
+      pool_size: 50,
+      pool_overflow_size: 100
+  ```
   """
 
   def init(options) do
